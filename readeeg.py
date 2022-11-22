@@ -9,5 +9,9 @@ event_dict = {'EV_ENC': 1 ,'EV_NO_ENC': 2}
 epochs.event_id = event_dict;
 
 
-epochs[3].plot(n_epochs=1);
-plt.show()
+#epochs[3].plot(n_epochs=1);
+#plt.show()
+
+print(len(epochs))
+print(epochs.times)
+print(epochs)
