@@ -41,7 +41,7 @@ psds_welch_mean = 10 * np.log10(psds_welch_mean)
 psds_welch_median = 10 * np.log10(psds_welch_median)
 
 # We will only plot the PSD for a single sensor in the first epoch.
-ch_name = 'Fp1'
+ch_name = 'F4'
 ch_idx = epochs.info['ch_names'].index(ch_name)
 epo_idx = 0
 
