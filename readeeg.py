@@ -11,7 +11,7 @@ from mne.stats import permutation_cluster_1samp_test as pcluster_test
 from Data_plot import Plot_eventpsd, plot_ERD
 
 #load  epcohs 
-epochs = mne.read_epochs('clean_s1_erp_epochs.fif', preload=True)
+epochs = mne.read_epochs('clean_s4_erp_epochs.fif', preload=True)
 
 """ ['Fp1', 'Fpz', 'Fp2', 'F7', 'F3', 'Fz', 'F4',
  'F8', 'FC5', 'FC1', 'FC2', 'FC6', 'T7', 'C3', 
@@ -33,7 +33,7 @@ epochs_NO_ENC=(epochs['EV_NO_ENC']).pick_channels(picks)
 #Plot_eventpsd(epochs_ENC,epochs_NO_ENC,epochs.ch_names[0:5])  
 
 freqs = np.arange(2, 36)  # frequencies from 2-35Hz
-vmin, vmax = -1, 2.5  # set min and max ERDS values in plot
+vmin, vmax = -1, 4.5  # set min and max ERDS values in plot
 baseline = (-0.25, 0)  # baseline interval (in s)
 cnorm = TwoSlopeNorm(vmin=vmin, vcenter=0, vmax=vmax)  # min, center & max ERDS
 tmin,tmax=-0.25,2.99

@@ -98,7 +98,7 @@ def plot_ERD(epochs,freqs,baseline,tmin,tmax,kwargs,cnorm):
     axline_kw = dict(color='black', linestyle='dashed', linewidth=0.5, alpha=0.5)
     g.map(plt.axhline, y=0, **axline_kw)
     g.map(plt.axvline, x=0, **axline_kw)
-    g.set(ylim=(None, 1.5))
+    g.set(ylim=(None, 4.5))
     g.set_axis_labels("Time (s)", "ERDS (%)")
     g.set_titles(col_template="{col_name}", row_template="{row_name}")
     g.add_legend(ncol=2, loc='lower center')
@@ -114,7 +114,7 @@ def plot_ERD(epochs,freqs,baseline,tmin,tmax,kwargs,cnorm):
     g = sns.FacetGrid(df_mean, col='condition', col_order=['hands', 'feet'],
                     margin_titles=True)
     g = (g.map(sns.violinplot, 'channel', 'value', 'band', n_boot=10,
-            palette='deep', order=['C3', 'Cz', 'C4'],
+            palette='deep', 
             hue_order=freq_bands_of_interest,
             linewidth=0.5).add_legend(ncol=4, loc='lower center'))
 
