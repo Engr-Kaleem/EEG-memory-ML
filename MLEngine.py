@@ -66,7 +66,7 @@ class MLEngine:
 
                     y_train_cls = np.asarray(select_class_labels(cls_of_interest, y_train))
                     y_test_cls = np.asarray(select_class_labels(cls_of_interest, y_test))
-
+                    
                     x_features_train = fbcsp.transform(x_train_fb,class_idx=cls_of_interest)
                     x_features_test = fbcsp.transform(x_test_fb,class_idx=cls_of_interest)
 
@@ -102,7 +102,7 @@ class MLEngine:
         train_indices = {}
         test_indices = {}
         random_seed = ifold
-        skf_model = StratifiedKFold(n_splits=self.kfold, shuffle=True, random_state=random_seed)
+        skf_model = StratifiedKFold(n_splits=10, shuffle=True, random_state=random_seed)
         i = 0
         for train_idx, test_idx in skf_model.split(np.zeros(len(y_labels)), y_labels):
             train_indices.update({i: train_idx})
