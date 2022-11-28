@@ -28,9 +28,6 @@ class FBCSP:
 
     def transform(self,x_data,class_idx=0):
         n_fbanks, n_trials, n_channels, n_samples = x_data.shape
-        print(n_fbanks,n_trials,n_channels,n_samples)
-        print(len(self.fbcsp_filters_multi))
-        print(class_idx)
         x_features = np.zeros((n_trials,self.m_filters*2*len(x_data)),dtype=float)
         for i in range(n_fbanks):
             print(f'ind {i},class_idx{class_idx}')
