@@ -4,3 +4,4 @@ matplotlib
 mne
 seaborn
 pandas
+scikit-learn
