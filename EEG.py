@@ -10,7 +10,7 @@ import numpy as np
 
 # Read epochs
 
-epochs = mne.read_epochs('clean_s4_erp_epochs.fif', preload=True)
+epochs = mne.read_epochs('clean_s5_erp_epochs.fif', preload=True)
 eeg_data = epochs.get_data()
 
 # applying filter bank
