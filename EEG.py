@@ -19,11 +19,11 @@ fbank_coeff = fbank.get_filter_coeff()
 filtered_data = fbank.filter_data(eeg_data)
 labels = epochs.events[:, -1]
 labels[labels==2]=0
-print(np.unique(labels))
+
 training_accuracy = []
 testing_accuracy = []
-kfold = 3
-ntimes = 3
+kfold = 2
+ntimes = 2
 m_filters = 2
 CV = MLEngine()
 for k in range(ntimes):
@@ -68,8 +68,8 @@ for k in range(ntimes):
         y_train_predicted_multi = CV.get_multi_class_regressed(y_train_predicted)
         y_test_predicted_multi = CV.get_multi_class_regressed(y_test_predicted)
 
-        tr_acc = np.sum(y_train_predicted_multi == y_train, dtype=np.float) / len(y_train)
-        te_acc = np.sum(y_test_predicted_multi == y_test, dtype=np.float) / len(y_test)
+        tr_acc = np.sum(y_train_predicted_multi == y_train, dtype=float) / len(y_train)
+        te_acc = np.sum(y_test_predicted_multi == y_test, dtype=float) / len(y_test)
 
         print(f'Training Accuracy = {str(tr_acc)}\n')
         print(f'Testing Accuracy = {str(te_acc)}\n \n')
