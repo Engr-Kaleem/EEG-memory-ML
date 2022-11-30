@@ -11,14 +11,32 @@ from mne.stats import permutation_cluster_1samp_test as pcluster_test
 from Data_plot import Plot_eventpsd, plot_ERD
 
 #load  epcohs 
-epochs = mne.read_epochs('clean_s4_erp_epochs.fif', preload=True)
+s=range(1,14)
+subdata=[]
+
 
 """ ['Fp1', 'Fpz', 'Fp2', 'F7', 'F3', 'Fz', 'F4',
  'F8', 'FC5', 'FC1', 'FC2', 'FC6', 'T7', 'C3', 
 'Cz', 'C4', 'T8', 'CP5', 'CP1', 'CP2', 'CP6', 'P7'
 , 'P3', 'Pz', 'P4', 'P8', 'POz', 'O1', 'Oz', 'O2'] """
 
-picks=[ 'Fp2','CP5', 'CP1']
+picks=['Fp1', 'Fpz', 'Fp2', 'F7', 'F3', 'Fz', 'F4',
+ 'F8', 'FC5', 'FC1', 'FC2', 'FC6', 'T7', 'C3', 
+'Cz', 'C4', 'T8', 'CP5', 'CP1', 'CP2', 'CP6', 'P7'
+, 'P3', 'Pz', 'P4', 'P8', 'POz', 'O1', 'Oz', 'O2']
+
+for i in range(len(s)):
+    epochs = mne.read_epochs('data/clean_s'+str(1)+'_erp_epochs.fif', preload=True)
+    epochs.filter(4.0,38.0,picks)
+    Plot_eventpsd(epochs['EV_ENC'],epochs['EV_NO_ENC'],epochs.ch_names[0:5],s[i]) 
+    subdata.append(epochs)
+print(len(subdata))
+
+
+
+
+
+''' picks=[ 'Fp2','CP5', 'CP1']
 # check the events
 print(epochs)
 print(epochs.event_id)
@@ -49,3 +67,4 @@ plot_ERD(epochs[:200].pick_channels(picks),freqs,baseline,tmin,tmax,kwargs,cnorm
 
 
 
+ '''

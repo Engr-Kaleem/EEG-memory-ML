@@ -8,7 +8,7 @@ from mne.time_frequency import tfr_multitaper
 from mne.stats import permutation_cluster_1samp_test as pcluster_test
 
 
-def Plot_eventpsd(epochs_ENC,epochs_NO_ENC,ch_names):
+def Plot_eventpsd(epochs_ENC,epochs_NO_ENC,ch_names,subno):
     kwargs = dict(fmin=2, fmax=40, n_jobs=None)
     spectrum = epochs_ENC.compute_psd(
         'welch', average='median', **kwargs)
@@ -24,6 +24,7 @@ def Plot_eventpsd(epochs_ENC,epochs_NO_ENC,ch_names):
     psds_welch_median = 10 * np.log10(psds_welch_median)
 
     for ch in ch_names:
+        plt.figure()
         ch_idx = epochs_ENC.info['ch_names'].index(ch)
         _, ax = plt.subplots()
         ax.plot(freqs_mean, psds_welch_mean[ch_idx, :], color='k',
@@ -31,10 +32,11 @@ def Plot_eventpsd(epochs_ENC,epochs_NO_ENC,ch_names):
         ax.plot(freqs_median, psds_welch_median[ ch_idx, :], color='k',
                 ls='--', label='NO_ENC')
 
-        ax.set(title=f'Welch PSD ({ch}, evnents)',
+        ax.set(title=f'Welch PSD ({ch},subject {subno} )',
             xlabel='Frequency (Hz)', ylabel='Power Spectral Density (dB)')
         ax.legend(loc='upper right')
-        plt.show()
+        plt.savefig(f'PSDplots/subject{subno}{ch}.png')
+        
 
 
 def plot_ERD(epochs,freqs,baseline,tmin,tmax,kwargs,cnorm):
