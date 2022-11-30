@@ -11,7 +11,7 @@ from mne.stats import permutation_cluster_1samp_test as pcluster_test
 from Data_plot import Plot_eventpsd, plot_ERD
 
 #load  epcohs 
-s=range(1,14)
+s=range(1,15)
 subdata=[]
 
 
