@@ -9,6 +9,7 @@ import mne
 from mne.time_frequency import tfr_multitaper
 from mne.stats import permutation_cluster_1samp_test as pcluster_test
 from Data_plot import Plot_eventpsd, plot_ERD, Plot_bandpsd,Plot_subpsd,plot_ERD_bands
+from Data_plot import plot_ERD_stats
 from topo_plots import plot_psdtopo
 #load  epcohs 
 s=range(1,10)
@@ -27,10 +28,10 @@ picks=['Fp1', 'Fpz', 'Fp2', 'F7', 'F3', 'Fz', 'F4',
     epochs.filter(1.0,38.0,picks)
     Plot_subpsd(epochs['EV_ENC'],epochs['EV_NO_ENC'],s[i])  """
 
-for i in range(1,len(s)):
+""" for i in range(1,len(s)):
     epochs = mne.read_epochs('data/clean_s'+str(i)+'_erp_epochs.fif', preload=True)
     epochs.filter(1.0,38.0,picks)
-    plot_psdtopo(epochs['EV_ENC'],epochs['EV_NO_ENC'],s[i])  
+    plot_psdtopo(epochs['EV_ENC'],epochs['EV_NO_ENC'],s[i])   """
 
 """ ['Fp1', 'Fpz', 'Fp2', 'F7', 'F3', 'Fz', 'F4',
  'F8', 'FC5', 'FC1', 'FC2', 'FC6', 'T7', 'C3', 
@@ -80,6 +81,16 @@ picks=['Fp1', 'Fpz', 'Fp2','FC1', 'FC2']
 
 
  """
+picks=['Fp1', 'Fpz', 'Fp2','FC1', 'FC2']  
+for i in range(1,len(s)):
+    epochs = mne.read_epochs('data/clean_s'+str(i)+'_erp_epochs.fif', preload=True)
+    freqs = np.arange(2, 36)  # frequencies from 2-35Hz
+    vmin, vmax = -1, 6.5  # set min and max ERDS values in plot
+    baseline = (-0.25, 0)  # baseline interval (in s)
+    cnorm = TwoSlopeNorm(vmin=vmin, vcenter=0, vmax=vmax)  # min, center & max ERDS
+    tmin,tmax=-1,2.99
+    plot_ERD_stats(epochs.pick_channels(picks),freqs,baseline,tmin,tmax,cnorm,i)
+
 
 ''' picks=[ 'Fp2','CP5', 'CP1']
 # check the events

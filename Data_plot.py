@@ -181,3 +181,42 @@ def plot_ERD_bands(epochs,freqs,baseline,tmin,tmax,cnorm,sub):
     g.fig.savefig(f'ERDbandplots/subject{sub}.png')
     
  
+
+def plot_ERD_stats(epochs,freqs,baseline,tmin,tmax,cnorm,sub):
+    tfr = tfr_multitaper(epochs, freqs=freqs, n_cycles=freqs, use_fft=True,
+                        return_itc=False, average=False, decim=2,n_jobs=4)
+    tfr.crop(tmin, tmax).apply_baseline(baseline, mode="percent")
+    df = tfr.to_data_frame(time_format=None, long_format=True)
+      # Map to frequency bands:
+    freq_bounds = {'_': 0,
+                'delta': 3,
+                'theta': 7,
+                'alpha': 13,
+                'beta': 35,
+                'gamma': 140}
+    df['band'] = pd.cut(df['freq'], list(freq_bounds.values()),
+                        labels=list(freq_bounds)[1:])
+
+    # Filter to retain only relevant frequency bands:
+    freq_bands_of_interest = ['delta', 'theta', 'alpha', 'beta']
+    df = df[df.band.isin(freq_bands_of_interest)]
+    df['band'] = df['band'].cat.remove_unused_categories()
+    df['channel'] = df['channel'].cat.reorder_categories(('Fp1', 'Fpz', 'Fp2','FC1', 'FC2'),
+                                                     ordered=True)
+    df_mean = (df.query('time > 1')
+             .groupby(['condition', 'epoch', 'band', 'channel'])[['value']]
+             .mean()
+             .reset_index())
+
+    g = sns.FacetGrid(df_mean, col='condition', col_order=['EV_ENC', 'EV_NO_ENC'],
+                    margin_titles=True)
+    g = (g.map(sns.violinplot, 'channel', 'value', 'band', n_boot=10,
+            palette='deep', order=['Fp1', 'Fpz', 'Fp2','FC1', 'FC2'],
+            hue_order=freq_bands_of_interest,
+            linewidth=0.5).add_legend(ncol=4, loc='lower center'))
+    axline_kw = dict(color='black', linestyle='dashed', linewidth=0.5, alpha=0.5)
+    g.map(plt.axhline, **axline_kw)
+    g.set_axis_labels("", "ERDS (%)")
+    g.set_titles(col_template="{col_name}", row_template="{row_name}")
+    g.fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.3)
+    g.fig.savefig(f'ERDstatplots/subject{sub}.png')
