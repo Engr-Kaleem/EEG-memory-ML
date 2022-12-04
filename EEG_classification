@@ -29,7 +29,9 @@ def conf_matrix(y_test, pred_test):
 
 # Read epochs
 
-epochs = mne.read_epochs('data/clean_s5_erp_epochs.fif', preload=True)
+""" for i in range(1,15,1):
+    epochs = mne.read_epochs('data/clean_s'+str(i)+'_erp_epochs.fif', preload=True) """
+epochs = mne.read_epochs('data/clean_s10_erp_epochs.fif', preload=True)
 eeg_data = epochs.get_data()
 
 # applying filter bank
@@ -65,7 +67,7 @@ for k in range(ntimes):
         fbcsp.fit(x_train_fb, y_train)
         y_train_predicted = np.zeros((y_train.shape[0], n_classes), dtype=float)
         y_test_predicted = np.zeros((y_test.shape[0], n_classes), dtype=float)
-
+        print(y_test_predicted.shape)
         for j in range(n_classes):
             cls_of_interest = y_classes_unique[j]
           
@@ -77,15 +79,15 @@ for k in range(ntimes):
             x_features_train = fbcsp.transform(x_train_fb, class_idx=cls_of_interest)
             x_features_test = fbcsp.transform(x_test_fb, class_idx=cls_of_interest)
 
-            classifier_type = EasyEnsembleClassifier(n_estimators=10)
+            classifier_type = BalancedRandomForestClassifier(n_estimators=10)
             classifier = Classifier(classifier_type)
             y_train_predicted[:, j] = classifier.fit(x_features_train, np.asarray(y_train_cls, dtype=float))
             y_test_predicted[:, j] = classifier.predict(x_features_test)
             
             
       
-        y_train_predicted_multi = CV.get_multi_class_regressed(y_train_predicted)
-        y_test_predicted_multi = CV.get_multi_class_regressed(y_test_predicted)
+        y_train_predicted_multi = CV.get_multi_class_label(y_train_predicted)
+        y_test_predicted_multi = CV.get_multi_class_label(y_test_predicted)
         print(y_test_predicted_multi)
         tr_acc = np.sum(y_train_predicted_multi == y_train, dtype=float) / len(y_train)
         te_acc = np.sum(y_test_predicted_multi == y_test, dtype=float) / len(y_test)
