@@ -9,107 +9,108 @@ from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestClassifier
 from imblearn.ensemble import EasyEnsembleClassifier,BalancedRandomForestClassifier
 import numpy as np
-import seaborn as sns
 from sklearn.metrics import confusion_matrix, f1_score,precision_score,recall_score
 import pandas as pd 
-import matplotlib.pyplot as plt 
+from metrics_plot import plot_metrics,conf_matrix
 
-
-def conf_matrix(y_test, pred_test):    
-    
-    # Creating a confusion matrix
-    con_mat = confusion_matrix(y_test, pred_test)
-    con_mat = pd.DataFrame(con_mat, range(2), range(2))
-   
-    #Ploting the confusion matrix
-    plt.figure(figsize=(6,6))
-    sns.set(font_scale=1.5) 
-    sns.heatmap(con_mat, annot=True, annot_kws={"size": 16}, fmt='g', cmap='Blues', cbar=False)
-    plt.show()
 
 # Read epochs
 
-""" for i in range(1,15,1):
-    epochs = mne.read_epochs('data/clean_s'+str(i)+'_erp_epochs.fif', preload=True) """
-epochs = mne.read_epochs('data/clean_s10_erp_epochs.fif', preload=True)
-eeg_data = epochs.get_data()
+subs=14
+clf='SVR'
+All_meterics=np.zeros([6, subs])
 
-# applying filter bank
-fbank = FilterBank(fs=100.0)
-fbank_coeff = fbank.get_filter_coeff()
-filtered_data = fbank.filter_data(eeg_data)
-labels = epochs.events[:, -1]
-labels[labels==2]=0
+for sub in range(1,subs+1,1):
+    epochs = mne.read_epochs('data/clean_s'+str(sub)+'_erp_epochs.fif', preload=True) 
+    #epochs = mne.read_epochs('data/clean_s10_erp_epochs.fif', preload=True)
+    eeg_data = epochs.get_data()
 
-training_accuracy = []
-testing_accuracy = []
-kfold = 10
-ntimes = 10
-m_filters = 2
-CV = MLEngine()
-for k in range(ntimes):
-    '''for N times x K fold CV'''
+    # applying filter bank
+    fbank = FilterBank(fs=100.0)
+    fbank_coeff = fbank.get_filter_coeff()
+    filtered_data = fbank.filter_data(eeg_data)
+    labels = epochs.events[:, -1]
+    labels[labels==2]=0
+
+    training_accuracy = []
+    testing_accuracy = []
+    f1=[]
+    prec=[]
+    recal=[]
+    kfold = 3
+    ntimes = 2
+    m_filters = 2
     CV = MLEngine()
-    train_indices, test_indices = CV.cross_validate_Ntimes_Kfold(y_labels=labels, ifold=k)
-    for i in range(kfold):
-        train_idx = train_indices.get(i)
-        test_idx = test_indices.get(i)
-        print(f'Times {str(k)}, Fold {str(i)}\n')
-        y_train, y_test = CV.split_ydata(labels, train_idx, test_idx)
-        x_train_fb, x_test_fb = CV.split_xdata(filtered_data, train_idx, test_idx)
+    for k in range(ntimes):
+        '''for N times x K fold CV'''
+        CV = MLEngine()
+        train_indices, test_indices = CV.cross_validate_Ntimes_Kfold(y_labels=labels, ifold=k)
+        for i in range(kfold):
+            train_idx = train_indices.get(i)
+            test_idx = test_indices.get(i)
+            print(f'Times {str(k)}, Fold {str(i)}\n')
+            y_train, y_test = CV.split_ydata(labels, train_idx, test_idx)
+            x_train_fb, x_test_fb = CV.split_xdata(filtered_data, train_idx, test_idx)
 
-        y_classes_unique = np.unique(y_train)
+            y_classes_unique = np.unique(y_train)
+        
+            n_classes = len(np.unique(y_train))
+
+
+            fbcsp = FBCSP(m_filters)
+            fbcsp.fit(x_train_fb, y_train)
+            y_train_predicted = np.zeros((y_train.shape[0], n_classes), dtype=float)
+            y_test_predicted = np.zeros((y_test.shape[0], n_classes), dtype=float)
+            #print(y_test_predicted.shape)
+            for j in range(n_classes):
+                cls_of_interest = y_classes_unique[j]
+            
+                select_class_labels = lambda cls, labels: [0 if y == cls else 1 for y in labels]
+
+                y_train_cls = np.asarray(select_class_labels(cls_of_interest, y_train))
+                y_test_cls = np.asarray(select_class_labels(cls_of_interest, y_test))
+                
+                x_features_train = fbcsp.transform(x_train_fb, class_idx=cls_of_interest)
+                x_features_test = fbcsp.transform(x_test_fb, class_idx=cls_of_interest)
+
+                #classifier_type = BalancedRandomForestClassifier(n_estimators=10)
+                classifier_type =SVR(gamma='auto')
+                classifier = Classifier(classifier_type)
+                y_train_predicted[:, j] = classifier.fit(x_features_train, np.asarray(y_train_cls, dtype=float))
+                y_test_predicted[:, j] = classifier.predict(x_features_test)
+                
+                
+        
+            y_train_predicted_multi = CV.get_multi_class_regressed(y_train_predicted)
+            y_test_predicted_multi = CV.get_multi_class_regressed(y_test_predicted)
+            #print(y_test_predicted_multi)
+            tr_acc = np.sum(y_train_predicted_multi == y_train, dtype=float) / len(y_train)
+            te_acc = np.sum(y_test_predicted_multi == y_test, dtype=float) / len(y_test)
+            conf_matrix(y_test_predicted_multi,y_test,sub,i,k)
+            #print(f'Training Accuracy = {str(tr_acc)}\n')
+            #print(f'Testing Accuracy = {str(te_acc)}\n \n')
+
+            f1_test = f1_score(y_test, y_test_predicted_multi)
+            #print('The f1 score for the testing data:', f1_test)    
+            recal_test = recall_score(y_test, y_test_predicted_multi)
+            #print('The recall score for the testing data:', recal_test)  
+            precision_test = precision_score(y_test, y_test_predicted_multi)
+            #print('The precison score for the testing data:', precision_test)  
+
+            training_accuracy.append(tr_acc)
+            testing_accuracy.append(te_acc)
+            f1.append(f1_test)
+            prec.append(precision_test)
+            recal.append(recal_test)
+    All_meterics[0,sub-1]=sub
+    All_meterics[1,sub-1]= np.mean(np.asarray(training_accuracy))
+    All_meterics[2,sub-1]= np.mean(np.asarray(testing_accuracy))
+    All_meterics[3,sub-1]= np.mean(np.asarray(f1))
+    All_meterics[4,sub-1] = np.mean(np.asarray(recal))
+    All_meterics[5,sub-1] = np.mean(np.asarray(prec))
+    #Sprint(All_meterics)
+
+    #print(f'subjecect{sub} n is {i}')
+plot_metrics(All_meterics,clf)
+
     
-        n_classes = len(np.unique(y_train))
-
-
-        fbcsp = FBCSP(m_filters)
-        fbcsp.fit(x_train_fb, y_train)
-        y_train_predicted = np.zeros((y_train.shape[0], n_classes), dtype=float)
-        y_test_predicted = np.zeros((y_test.shape[0], n_classes), dtype=float)
-        print(y_test_predicted.shape)
-        for j in range(n_classes):
-            cls_of_interest = y_classes_unique[j]
-          
-            select_class_labels = lambda cls, labels: [0 if y == cls else 1 for y in labels]
-
-            y_train_cls = np.asarray(select_class_labels(cls_of_interest, y_train))
-            y_test_cls = np.asarray(select_class_labels(cls_of_interest, y_test))
-            
-            x_features_train = fbcsp.transform(x_train_fb, class_idx=cls_of_interest)
-            x_features_test = fbcsp.transform(x_test_fb, class_idx=cls_of_interest)
-
-            classifier_type = BalancedRandomForestClassifier(n_estimators=10)
-            classifier = Classifier(classifier_type)
-            y_train_predicted[:, j] = classifier.fit(x_features_train, np.asarray(y_train_cls, dtype=float))
-            y_test_predicted[:, j] = classifier.predict(x_features_test)
-            
-            
-      
-        y_train_predicted_multi = CV.get_multi_class_label(y_train_predicted)
-        y_test_predicted_multi = CV.get_multi_class_label(y_test_predicted)
-        print(y_test_predicted_multi)
-        tr_acc = np.sum(y_train_predicted_multi == y_train, dtype=float) / len(y_train)
-        te_acc = np.sum(y_test_predicted_multi == y_test, dtype=float) / len(y_test)
-        conf_matrix(y_test_predicted_multi,y_test)
-        print(f'Training Accuracy = {str(tr_acc)}\n')
-        print(f'Testing Accuracy = {str(te_acc)}\n \n')
-
-        f1_test = f1_score(y_test, y_test_predicted_multi)
-        print('The f1 score for the testing data:', f1_test)    
-        recal_test = recall_score(y_test, y_test_predicted_multi)
-        print('The recall score for the testing data:', recal_test)  
-        precision_test = precision_score(y_test, y_test_predicted_multi)
-        print('The precison score for the testing data:', precision_test)  
-
-        training_accuracy.append(tr_acc)
-        testing_accuracy.append(te_acc)
-
-mean_training_accuracy = np.mean(np.asarray(training_accuracy))
-mean_testing_accuracy = np.mean(np.asarray(testing_accuracy))
-
-print('*' * 10, '\n')
-print(f'Mean Training Accuracy = {str(mean_training_accuracy)}\n')
-print(f'Mean Testing Accuracy = {str(mean_testing_accuracy)}')
-print('*' * 10, '\n')
-
