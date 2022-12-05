@@ -14,14 +14,21 @@ from MLEngine import MLEngine
 import CSP
 
 epochs = mne.read_epochs('data/clean_s10_erp_epochs.fif', preload=True)
-print(epochs['EV_ENC'].shape,epochs[EV_NO_ENC].hsape)
+print(epochs['EV_ENC'].shape,epochs[EV_NO_ENC].shape)
 eeg_data = epochs.get_data()
+m_filters = 2
 fbank = FilterBank(fs=100.0)
 fbank_coeff = fbank.get_filter_coeff()
 filtered_data = fbank.filter_data(eeg_data)
 labels = epochs.events[:, -1]
-labels[labels==2]=0
-print(labels)
+labels[labels==1]=0
+labels[labels==2]=1
+print(epochs)
+print(f'unique labels{labels[1:30]}')
+print('shape of data{filtered_data.shape{} and labels{len(labels)}}')
+fbcsp = FBCSP(m_filters)
+fbcsp.fit(filtered_data, labels)
+features_mat = fbcsp.transform(filter_data, class_idx=0)
 """ #Use SMOTE to oversample the minority class
 oversample = SMOTE()
 over_X, over_y = oversample.fit_resample(X, y)
