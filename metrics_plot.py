@@ -2,6 +2,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import pandas as pd
+import numpy as np
 def  plot_metrics(All_metrics,clf):
     
     plt.figure()
@@ -10,7 +11,7 @@ def  plot_metrics(All_metrics,clf):
     plt.plot(All_metrics[0,:],All_metrics[3,:],marker='P' , label = "F1")
     plt.plot(All_metrics[0,:],All_metrics[4,:],marker='P' , label = "Recall")
     plt.plot(All_metrics[0,:],All_metrics[5,:],marker='P' , label = "Precision")
-  
+    plt.grid() 
     plt.xlabel('subjects')
     plt.ylabel('Accuracy')
     plt.title(f'Accuracey with clssifier:{clf}')

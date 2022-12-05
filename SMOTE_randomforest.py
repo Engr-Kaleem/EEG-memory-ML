@@ -19,7 +19,7 @@ testing_accuracy = []
 f1=[]
 prec=[]
 recal=[] '''
-subs=3
+subs=14
 clf='SMOTE+TREE'
 All_meterics=np.zeros([6, subs])
 
@@ -84,5 +84,5 @@ for sub in range(1,subs+1,1):
     y_pred = SMOTE_SRF.predict(X_test)
     #Create confusion matrix
     fig = plot_confusion_matrix(SMOTE_SRF, X_test, y_test, display_labels=['EV_ENC', 'EV_NO,ENC'], cmap='Greens')
-    plt.savefig(f'confmatSMOTE/subj{sub}:clf:{clf}')
+    plt.savefig(f'confmatSMOTE/subj{sub}clf{clf}')
 plot_metrics(All_meterics,clf)
