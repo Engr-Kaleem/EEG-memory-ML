@@ -70,7 +70,7 @@ for sub in range(1,subs+1,1):
     recal.append(scores['test_recall']) '''
     All_meterics[0,sub-1]=sub
     All_meterics[1,sub-1]= mean(scores['train_accuracy'])
-    All_meterics[2,sub-1]= mean(scores['test_precision'])
+    All_meterics[2,sub-1]= mean(scores['test_accuracy'])
     All_meterics[3,sub-1]= mean(scores['test_f1'])
     All_meterics[4,sub-1] = mean(scores['test_recall'])
     All_meterics[5,sub-1] = mean(scores['test_precision'])
