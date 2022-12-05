@@ -3,13 +3,13 @@ from MLEngine import FilterBank
 from Classifier import Classifier
 from FBCSP import FBCSP
 from MLEngine import MLEngine
-import CSP
+
 import mne
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestClassifier
 from imblearn.ensemble import EasyEnsembleClassifier,BalancedRandomForestClassifier
 import numpy as np
-from sklearn.metrics import confusion_matrix, f1_score,precision_score,recall_score
+from sklearn.metrics import f1_score,precision_score,recall_score
 import pandas as pd 
 from metrics_plot import plot_metrics,conf_matrix
 
@@ -22,6 +22,7 @@ All_meterics=np.zeros([6, subs])
 
 for sub in range(1,subs+1,1):
     epochs = mne.read_epochs('data/clean_s'+str(sub)+'_erp_epochs.fif', preload=True) 
+    print(f'{epochs}')
     #epochs = mne.read_epochs('data/clean_s10_erp_epochs.fif', preload=True)
     eeg_data = epochs.get_data()
 
@@ -37,8 +38,8 @@ for sub in range(1,subs+1,1):
     f1=[]
     prec=[]
     recal=[]
-    kfold = 3
-    ntimes = 2
+    kfold = 1
+    ntimes = 1
     m_filters = 2
     CV = MLEngine()
     for k in range(ntimes):
@@ -56,7 +57,7 @@ for sub in range(1,subs+1,1):
         
             n_classes = len(np.unique(y_train))
 
-
+            print(f'shape of datafrom split{x_train_fb.shape}')
             fbcsp = FBCSP(m_filters)
             fbcsp.fit(x_train_fb, y_train)
             y_train_predicted = np.zeros((y_train.shape[0], n_classes), dtype=float)
@@ -72,7 +73,7 @@ for sub in range(1,subs+1,1):
                 
                 x_features_train = fbcsp.transform(x_train_fb, class_idx=cls_of_interest)
                 x_features_test = fbcsp.transform(x_test_fb, class_idx=cls_of_interest)
-
+                print(f'shape of traning fratures{x_features_train.shape}')
                 #classifier_type = BalancedRandomForestClassifier(n_estimators=10)
                 classifier_type =SVR(gamma='auto')
                 classifier = Classifier(classifier_type)
