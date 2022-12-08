@@ -13,7 +13,7 @@ from FBCSP import FBCSP
 import pandas as pd
 import numpy as np
 from metrics_plot import plot_metrics
-
+from sklearn.metrics import f1_score,precision_score,recall_score
 ''' training_accuracy = []
 testing_accuracy = []
 f1=[]
@@ -82,6 +82,12 @@ for sub in range(1,subs+1,1):
     SMOTE_SRF.fit(over_X_train, over_y_train)
     #SMOTE SRF prediction result
     y_pred = SMOTE_SRF.predict(X_test)
+    f1_test = f1_score(y_test, y_pred)
+    print('The f1 score for the testing data:', f1_test)    
+    recal_test = recall_score(y_test, y_pred)
+    print('The recall score for the testing data:', recal_test)  
+    precision_test = precision_score(y_test, y_pred)
+    print('The precison score for the testing data:', precision_test)
     #Create confusion matrix
     fig = plot_confusion_matrix(SMOTE_SRF, X_test, y_test, display_labels=['EV_ENC', 'EV_NO,ENC'], cmap='Greens')
     plt.savefig(f'confmatSMOTE/subj{sub}clf{clf}')
