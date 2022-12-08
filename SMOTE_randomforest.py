@@ -23,6 +23,7 @@ subs=14
 clf='SMOTE+TREE'
 All_meterics=np.zeros([6, subs])
 
+
 for sub in range(1,subs+1,1):
     epochs = mne.read_epochs('data/clean_s'+str(sub)+'_erp_epochs.fif', preload=True) 
     
@@ -38,13 +39,14 @@ for sub in range(1,subs+1,1):
     labels = epochs.events[:, -1]
     labels[labels==1]=0
     labels[labels==2]=1
-    print(epochs)
+    ''' print(epochs)
     print(f'unique labels{labels[1:30]}')
-    print(f'shape of data{filtered_data.shape} and labels{len(labels)}')
+    print(f'shape of data{filtered_data.shape} and labels{len(labels)}') '''
+    
     fbcsp = FBCSP(m_filters)
     fbcsp.fit(filtered_data, labels)
     features_mat = fbcsp.transform(filtered_data, class_idx=0)
-    print(f'feature shape after transform{features_mat.shape}')
+    #print(f'feature shape after transform{features_mat.shape}')
     #Use SMOTE to oversample the minority class
     oversample = SMOTE()
     over_X, over_y = oversample.fit_resample(features_mat,labels)
@@ -58,23 +60,10 @@ for sub in range(1,subs+1,1):
     scores = cross_validate(SMOTE_SRF, over_X, over_y, scoring=scoring, cv=cv,return_train_score=True)
     #Get average evaluation metrics
     df=pd.DataFrame(scores)
-    print(df.head())
-    print('trainig f1: %.3f' % mean(scores['train_f1']))
-    print('Mean f1: %.3f' % mean(scores['test_f1']))
-    print('Mean recall: %.3f' % mean(scores['test_recall']))
-    print('Mean precision: %.3f' % mean(scores['test_precision']))
-    ''' training_accuracy.append(scores['train_accuracy'])
-    testing_accuracy.append(scores['test_accuracy'])
-    f1.append(scores['test_f1'])
-    prec.append(scores['test_precision'])
-    recal.append(scores['test_recall']) '''
     All_meterics[0,sub-1]=sub
     All_meterics[1,sub-1]= mean(scores['train_accuracy'])
     All_meterics[2,sub-1]= mean(scores['test_accuracy'])
-    All_meterics[3,sub-1]= mean(scores['test_f1'])
-    All_meterics[4,sub-1] = mean(scores['test_recall'])
-    All_meterics[5,sub-1] = mean(scores['test_precision'])
-
+        
     #Randomly spilt dataset to test and train set
     X_train, X_test, y_train, y_test = train_test_split(features_mat, labels, test_size=0.1, stratify=labels)
     print(f'tarin={X_train.shape},test={X_test.shape},tr_label{y_train.shape},tst_lable{y_test.shape}')
@@ -88,7 +77,11 @@ for sub in range(1,subs+1,1):
     print('The recall score for the testing data:', recal_test)  
     precision_test = precision_score(y_test, y_pred)
     print('The precison score for the testing data:', precision_test)
+    All_meterics[3,sub-1]= f1_test
+    All_meterics[4,sub-1] = recal_test
+    All_meterics[5,sub-1] = precision_test
     #Create confusion matrix
     fig = plot_confusion_matrix(SMOTE_SRF, X_test, y_test, display_labels=['EV_ENC', 'EV_NO,ENC'], cmap='Greens')
     plt.savefig(f'confmatSMOTE/subj{sub}clf{clf}')
+    
 plot_metrics(All_meterics,clf)
