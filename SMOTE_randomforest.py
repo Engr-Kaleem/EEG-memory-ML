@@ -4,7 +4,8 @@ from matplotlib import pyplot
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_validate
 from sklearn.model_selection import RepeatedStratifiedKFold
-from sklearn.metrics import plot_confusion_matrix
+from sklearn.metrics import confusion_matrix,ConfusionMatrixDisplay
+
 from sklearn.ensemble import RandomForestClassifier
 from imblearn.over_sampling import SMOTE
 import mne
@@ -89,6 +90,10 @@ for sub in range(1,subs+1,1):
     precision_test = precision_score(y_test, y_pred)
     print('The precison score for the testing data:', precision_test)
     #Create confusion matrix
-    fig = plot_confusion_matrix(SMOTE_SRF, X_test, y_test, display_labels=['EV_ENC', 'EV_NO,ENC'], cmap='Greens')
+    #fig = confusion_matrix(SMOTE_SRF, X_test, y_test, display_labels=['EV_ENC', 'EV_NO,ENC'], cmap='Greens')
+    cm = confusion_matrix(y_test, y_pred)
+    print(cm)
+    cmd = ConfusionMatrixDisplay(cm, display_labels=['EV_ENC', 'EV_NO,ENC'])
+    cmd.plot()
     plt.savefig(f'confmatSMOTE/subj{sub}clf{clf}')
 plot_metrics(All_meterics,clf)
