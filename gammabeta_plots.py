@@ -42,6 +42,7 @@ def plot_ERD_bands(epochs,freqs,baseline,tmin,tmax,cnorm,sub):
     tfr = tfr_multitaper(epochs, freqs=freqs, n_cycles=freqs, use_fft=True,
                         return_itc=False, average=False, decim=2,n_jobs=4)
     tfr.crop(tmin, tmax).apply_baseline(baseline, mode="percent")
+    
     df = tfr.to_data_frame(time_format=None, long_format=True)
 
     # Map to frequency bands:

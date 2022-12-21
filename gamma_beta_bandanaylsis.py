@@ -17,20 +17,21 @@ i=4
 
 # code fore plotting ERD of beta and gamma band 
 epochs = mne.read_epochs('data/clean_s'+str(i)+'_erp_epochs.fif', preload=True)
+epochs_ENC=epochs['EV_ENC']
 freqs = np.arange(13, 45)  # frequencies from 2-35Hz
 vmin, vmax = -1, 6.5  # set min and max ERDS values in plot
 baseline = (-0.25, 0)  # baseline interval (in s)
 cnorm = TwoSlopeNorm(vmin=vmin, vcenter=0, vmax=vmax)  # min, center & max ERDS
 tmin,tmax=-1,2.0
-tfr = tfr_multitaper(epochs, freqs=freqs, n_cycles=freqs, use_fft=True,
-                        return_itc=False, average=False, decim=2,n_jobs=4)
+tfr = tfr_multitaper(epochs_ENC, freqs=freqs, n_cycles=freqs, use_fft=True,
+                        return_itc=False, average=True, decim=2,n_jobs=4)
 tfr.crop(tmin, tmax).apply_baseline(baseline, mode="percent")
 df = tfr.to_data_frame(time_format=None, long_format=True)
 print(df.head)
 
 
 # Map to frequency bands:
-""" freq_bounds = {'_': 13,
+freq_bounds = {'_': 13,
             'beta': 35,
             'gamma': 45}
 df['band'] = pd.cut(df['freq'], list(freq_bounds.values()),
@@ -40,11 +41,10 @@ df['band'] = pd.cut(df['freq'], list(freq_bounds.values()),
 freq_bands_of_interest = ['beta','gamma']
 df = df[df.band.isin(freq_bands_of_interest)]
 df['band'] = df['band'].cat.remove_unused_categories()
-df['channel'] = df['channel'].cat.reorder_categories(('Fp1', 'Fpz', 'Fp2','FC1', 'FC2'),
-                                                    ordered=True)
 
-g = sns.FacetGrid(df, row='channel', col='band', margin_titles=True)
-g.map(sns.lineplot, 'time', 'value', 'condition', n_boot=10)
+
+g = sns.FacetGrid(df, row='ch_type', col='band', margin_titles=True)
+g.map(sns.lineplot, 'time', 'value', n_boot=10)
 axline_kw = dict(color='black', linestyle='dashed', linewidth=0.5, alpha=0.5)
 g.map(plt.axhline, y=0, **axline_kw)
 g.map(plt.axvline, x=0, **axline_kw)
@@ -56,7 +56,7 @@ g.fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.08)
 g.fig.savefig(f'ERDbandplots/subject{sub}.png')
 
 
- """
+
 
 # enable following code to pllot beta and  gamma band PSd of each subject
 
