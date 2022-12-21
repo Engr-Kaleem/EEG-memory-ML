@@ -220,3 +220,6 @@ def plot_ERD_stats(epochs,freqs,baseline,tmin,tmax,cnorm,sub):
     g.set_titles(col_template="{col_name}", row_template="{row_name}")
     g.fig.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.3)
     g.fig.savefig(f'ERDstatplots/subject{sub}.png')
+    
+    
+    
