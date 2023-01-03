@@ -147,7 +147,7 @@ def plot_ERD(epochs,freqs,baseline,tmin,tmax,kwargs,cnorm,sub):
 
 def plot_ERD_bands(epochs,freqs,baseline,tmin,tmax,cnorm,sub):
     tfr = tfr_multitaper(epochs, freqs=freqs, n_cycles=freqs, use_fft=True,
-                        return_itc=False, average=False, decim=2,n_jobs=4)
+                        return_itc=False, average=False, decim=2,n_jobs=2)
     tfr.crop(tmin, tmax).apply_baseline(baseline, mode="percent")
     df = tfr.to_data_frame(time_format=None, long_format=True)
 
@@ -165,7 +165,7 @@ def plot_ERD_bands(epochs,freqs,baseline,tmin,tmax,cnorm,sub):
     freq_bands_of_interest = ['delta', 'theta', 'alpha', 'beta']
     df = df[df.band.isin(freq_bands_of_interest)]
     df['band'] = df['band'].cat.remove_unused_categories()
-    df['channel'] = df['channel'].cat.reorder_categories(('Fp1', 'Fpz', 'Fp2','FC1', 'FC2'),
+    df['channel'] = df['channel'].cat.reorder_categories(('Fp1', 'Fpz','Fp2',  'T7', 'Cz',  'T8',  'P7' , 'Pz', 'P8' ),
                                                      ordered=True)
 
     g = sns.FacetGrid(df, row='band', col='channel', margin_titles=True)
@@ -173,7 +173,7 @@ def plot_ERD_bands(epochs,freqs,baseline,tmin,tmax,cnorm,sub):
     axline_kw = dict(color='black', linestyle='dashed', linewidth=0.5, alpha=0.5)
     g.map(plt.axhline, y=0, **axline_kw)
     g.map(plt.axvline, x=0, **axline_kw)
-    g.set(ylim=(None, 6.5))
+    g.set(ylim=(None, 3))
     g.set_axis_labels("Time (s)", "ERDS (%)")
     g.set_titles(col_template="{col_name}", row_template="{row_name}")
     g.add_legend(ncol=2, loc='lower center')
