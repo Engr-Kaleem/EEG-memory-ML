@@ -5,3 +5,4 @@ mne
 seaborn
 pandas
 scikit-learn
+imblearn
