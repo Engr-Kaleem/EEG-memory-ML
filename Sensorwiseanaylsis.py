@@ -12,10 +12,6 @@ from Data_plot import plot_ERD_stats
 from topo_plots import plot_psdtopo
 #load  epcohs 
 
-from fooof import FOOOFGroup
-from fooof.bands import Bands
-from fooof.analysis import get_band_peak_fg
-from fooof.plts.spectra import plot_spectrum
 
 s=range(1,3)
 subdata=[]
@@ -34,8 +30,8 @@ def check_nans(data, nan_policy='zero'):
         raise ValueError('Nan policy not understood.')
     
 def plot_psd_fooof(enc_data,non_enc_data,subno):
-  fg = FOOOFGroup(peak_width_limits=[1, 6], min_peak_height=0.05, peak_threshold=2., max_n_peaks=6, verbose=False)
-  bands = Bands({'theta': [3, 8],'alpha': [8, 12],'beta': [12, 30],'gamma': [30, 45]})
+  
+  bands =['theta','alpha','beta','gamma']
   freq_range = [3, 45]
   # Calculate power spectra across the the continuous data by MNE
   maplist=[]
@@ -90,12 +86,12 @@ def plot_psd_fooof(enc_data,non_enc_data,subno):
   
   
   fig, axes = plt.subplots(1, 4, figsize=(20, 5))
-  for ind, (label, band_def) in enumerate(bands):
+  for ind in range(0,4):
       band_power=maplist[ind]
       
 
       mne.viz.plot_topomap(band_power.mean(axis = 1),enc_data.info, axes=axes[ind],show=False);
-      axes[ind].set_title(label + ' power', {'fontsize' : 16}) 
+      axes[ind].set_title(bands[ind] + ' power', {'fontsize' : 16}) 
   fig.savefig(f'topmapdiff/subject{subno}.png')
   
  
