@@ -24,15 +24,18 @@ subs=14
 clf='SMOTE+TREE'
 All_meterics=np.zeros([6, subs])
 
+
+picks=['Fp1', 'Fpz', 'Fp2', 'F7', 'F3', 'Fz', 'F4'
+, 'P3', 'Pz', 'P4', 'P8', 'POz', 'O1', 'Oz', 'O2']
 for sub in range(1,subs+1,1):
     epochs = mne.read_epochs('data/clean_s'+str(sub)+'_erp_epochs.fif', preload=True) 
-    
+    epcochs_selected=epochs.pick_channels(picks)
     #epochs = mne.read_epochs('data/clean_s10_erp_epochs.fif', preload=True)
-    eeg_data = epochs.get_data()
+    eeg_data = epcochs_selected.get_data()
     # epochs = mne.read_epochs('data/clean_s10_erp_epochs.fif', preload=True)
-    print(epochs['EV_ENC'],epochs['EV_NO_ENC'])
+    print(epcochs_selected['EV_ENC'],epcochs_selected['EV_NO_ENC'])
     
-    labels = epochs.events[:, -1]
+    labels = epcochs_selected.events[:, -1]
     labels[labels==1]=0
     labels[labels==2]=1
     
@@ -47,7 +50,7 @@ for sub in range(1,subs+1,1):
     fbank_coeff = fbank.get_filter_coeff()
     filtered_data_train = fbank.filter_data(X_train)
     filtered_data_test= fbank.filter_data(X_test)
-
+    print(f' shape of filter data raain is {filtered_data_train.shape}')
     
    
     
