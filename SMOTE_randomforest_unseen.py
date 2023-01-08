@@ -47,7 +47,7 @@ for sub in range(1,subs+1,1):
     fbank_coeff = fbank.get_filter_coeff()
     filtered_data_train = fbank.filter_data(X_train)
     filtered_data_test= fbank.filter_data(X_test)
-
+    print(f' shape of filter data raain is {filtered_data_train.shape}')
     
    
     

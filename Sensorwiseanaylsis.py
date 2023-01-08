@@ -35,6 +35,8 @@ def plot_psd_fooof(enc_data,non_enc_data,subno):
   freq_range = [3, 45]
   # Calculate power spectra across the the continuous data by MNE
   maplist=[]
+  mappsd1=[]
+  mappsd2=[]
   
    
   kwargs = dict(fmin=3, fmax=8, n_jobs=4)
@@ -49,7 +51,8 @@ def plot_psd_fooof(enc_data,non_enc_data,subno):
   spectra2=spectra2.average()
   psds2, freqs2 = spectra2.get_data(return_freqs=True)
   spectra_diff_t=psds1-psds2
-  
+  mappsd1.append(psds1)
+  mappsd2.append(psds2)
   
   kwargs = dict(fmin=8, fmax=12, n_jobs=4)
   spectra1 = enc_data.compute_psd('welch', average='median', **kwargs)
@@ -59,7 +62,8 @@ def plot_psd_fooof(enc_data,non_enc_data,subno):
   spectra2=spectra2.average()
   psds2, freqs2 = spectra2.get_data(return_freqs=True)
   spectra_diff_a=psds1-psds2
-  
+  mappsd1.append(psds1)
+  mappsd2.append(psds2)
   
   kwargs = dict(fmin=12, fmax=30, n_jobs=4)
   spectra1 = enc_data.compute_psd('welch', average='median', **kwargs)
@@ -69,6 +73,8 @@ def plot_psd_fooof(enc_data,non_enc_data,subno):
   spectra2=spectra2.average()
   psds2, freqs2 = spectra2.get_data(return_freqs=True)
   spectra_diff_b=psds1-psds2
+  mappsd1.append(psds1)
+  mappsd2.append(psds2)
   
   kwargs = dict(fmin=30, fmax=45, n_jobs=4)
   spectra1 = enc_data.compute_psd('welch', average='median', **kwargs)
@@ -78,6 +84,8 @@ def plot_psd_fooof(enc_data,non_enc_data,subno):
   spectra2=spectra2.average()
   psds2, freqs2 = spectra2.get_data(return_freqs=True)
   spectra_diff_g=psds1-psds2
+  mappsd1.append(psds1)
+  mappsd2.append(psds2)
   
   maplist.append(spectra_diff_t)
   maplist.append(spectra_diff_a)
@@ -88,13 +96,23 @@ def plot_psd_fooof(enc_data,non_enc_data,subno):
   fig, axes = plt.subplots(1, 4, figsize=(20, 5))
   for ind in range(0,4):
       band_power=maplist[ind]
-      
-
       mne.viz.plot_topomap(band_power.mean(axis = 1),enc_data.info, axes=axes[ind],show=False);
       axes[ind].set_title(bands[ind] + ' power', {'fontsize' : 16}) 
   fig.savefig(f'topmapdiff/subject{subno}.png')
   
- 
+  fig, axes = plt.subplots(1, 4, figsize=(20, 5))
+  for ind in range(0,4):
+      band_power=mappsd1[ind]
+      mne.viz.plot_topomap(band_power.mean(axis = 1),enc_data.info, axes=axes[ind],show=False);
+      axes[ind].set_title(bands[ind] + ' power enc', {'fontsize' : 16}) 
+  fig.savefig(f'topmapdiff/subject{subno}_enc.png')
+  
+  fig, axes = plt.subplots(1, 4, figsize=(20, 5))
+  for ind in range(0,4):
+      band_power=mappsd2[ind]
+      mne.viz.plot_topomap(band_power.mean(axis = 1),enc_data.info, axes=axes[ind],show=False);
+      axes[ind].set_title(bands[ind] + ' power non enc', {'fontsize' : 16}) 
+  fig.savefig(f'topmapdiff/subject{subno}non_ENC.png')
   
   """ fg.fit(freqs1, spectra_diff, freq_range)
   # Plot the topographies across different frequency bands
