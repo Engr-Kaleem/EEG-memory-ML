@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import pandas as pd
 import numpy as np
-def  plot_metrics(All_metrics,clf):
+def  plot_metrics(All_metrics,clf,selected):
     
     plt.figure()
     plt.plot(All_metrics[0,:],All_metrics[1,:],marker='P' ,label = "train_acc")
@@ -20,7 +20,7 @@ def  plot_metrics(All_metrics,clf):
     # Put a legend below current axis
     plt.legend(loc='upper right',fontsize = 'xx-small')
     #plt.show()
-    plt.savefig(f'Accuracey/clssifier{clf}.png')
+    plt.savefig(f'Accuracey/clssifier{clf}_{selected}_channel.png')
 
 
    

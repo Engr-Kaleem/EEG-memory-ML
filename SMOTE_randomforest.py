@@ -24,6 +24,7 @@ subs=14
 clf='SMOTE+TREE'
 All_meterics=np.zeros([6, subs])
 
+selected='seendata'
 
 for sub in range(1,subs+1,1):
     epochs = mne.read_epochs('data/clean_s'+str(sub)+'_erp_epochs.fif', preload=True) 
@@ -89,4 +90,4 @@ for sub in range(1,subs+1,1):
     cmd.plot()
     plt.savefig(f'confmatSMOTE/subj{sub}clf{clf}')
     
-plot_metrics(All_meterics,clf)
+plot_metrics(All_meterics,clf,selected)

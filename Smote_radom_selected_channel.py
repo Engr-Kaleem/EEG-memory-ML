@@ -29,6 +29,10 @@ All_meterics=np.zeros([6, subs])
 picks=['Fp1', 'F7', 'F3', 'F4',
   'FC5', 'FC6', 'T7',  'T8', 'CP5', 'CP6'
 , 'P3', 'P8', 'POz', 'O1', 'Oz', 'O2']
+
+
+selected='16' #using 16 channel based of topo
+
 for sub in range(1,subs+1,1):
     epochs = mne.read_epochs('data/clean_s'+str(sub)+'_erp_epochs.fif', preload=True) 
     epcochs_selected=epochs.pick_channels(picks)
@@ -129,5 +133,7 @@ for sub in range(1,subs+1,1):
     print(cm)
     cmd = ConfusionMatrixDisplay(cm, display_labels=['EV_ENC', 'EV_NO,ENC'])
     cmd.plot()
-    plt.savefig(f'confmatSMOTE/subj{sub}clf{clf}_selected')
-plot_metrics(All_meterics,clf)
+    plt.savefig(f'confmatSMOTE/subj{sub}clf{clf}_{selected}')
+   
+plot_metrics(All_meterics,clf,selected)
+np.savetxt(f'Accuracey/clssifier{clf}_{selected}_channel.csv', All_meterics,delimiter = ",")

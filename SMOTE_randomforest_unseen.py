@@ -23,6 +23,7 @@ recal=[] '''
 subs=14
 clf='SMOTE+TREE'
 All_meterics=np.zeros([6, subs])
+selected='All'  # using all channels 
 
 for sub in range(1,subs+1,1):
     epochs = mne.read_epochs('data/clean_s'+str(sub)+'_erp_epochs.fif', preload=True) 
@@ -124,5 +125,6 @@ for sub in range(1,subs+1,1):
     print(cm)
     cmd = ConfusionMatrixDisplay(cm, display_labels=['EV_ENC', 'EV_NO,ENC'])
     cmd.plot()
-    plt.savefig(f'confmatSMOTE/subj{sub}clf{clf}')
-plot_metrics(All_meterics,clf)
+    plt.savefig(f'confmatSMOTE/subj{sub}clf{clf}_{selected}_channels')
+plot_metrics(All_meterics,clf,selected)
+np.savetxt(f'Accuracey/clssifier{clf}_{selected}_channel.csv', All_meterics,delimiter = ",")
