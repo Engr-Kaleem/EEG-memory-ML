@@ -24,9 +24,11 @@ subs=14
 clf='SMOTE+TREE'
 All_meterics=np.zeros([6, subs])
 
-
-picks=['Fp1', 'Fpz', 'Fp2', 'F7', 'F3', 'Fz', 'F4'
-, 'P3', 'Pz', 'P4', 'P8', 'POz', 'O1', 'Oz', 'O2']
+#f3,f7,FC5 ,cp5 ,P7,T7,p3,poz,fc6,P8,T8,cp6 ,'O1', 'Oz', 'O2',f4
+#
+picks=['Fp1', 'F7', 'F3', 'F4',
+  'FC5', 'FC6', 'T7',  'T8', 'CP5', 'CP6'
+, 'P3', 'P8', 'POz', 'O1', 'Oz', 'O2']
 for sub in range(1,subs+1,1):
     epochs = mne.read_epochs('data/clean_s'+str(sub)+'_erp_epochs.fif', preload=True) 
     epcochs_selected=epochs.pick_channels(picks)
@@ -127,5 +129,5 @@ for sub in range(1,subs+1,1):
     print(cm)
     cmd = ConfusionMatrixDisplay(cm, display_labels=['EV_ENC', 'EV_NO,ENC'])
     cmd.plot()
-    plt.savefig(f'confmatSMOTE/subj{sub}clf{clf}')
+    plt.savefig(f'confmatSMOTE/subj{sub}clf{clf}_selected')
 plot_metrics(All_meterics,clf)

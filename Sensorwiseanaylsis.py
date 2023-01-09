@@ -12,7 +12,10 @@ from Data_plot import plot_ERD_stats
 from topo_plots import plot_psdtopo
 #load  epcohs 
 
-
+picks=['Fp1', 'Fpz', 'Fp2', 'F7', 'F3', 'Fz', 'F4',
+ 'F8', 'FC5', 'FC1', 'FC2', 'FC6', 'T7', 'C3', 
+'Cz', 'C4', 'T8', 'CP5', 'CP1', 'CP2', 'CP6', 'P7'
+, 'P3', 'Pz', 'P4', 'P8', 'POz', 'O1', 'Oz', 'O2']
 s=range(1,3)
 subdata=[]
 
@@ -92,25 +95,24 @@ def plot_psd_fooof(enc_data,non_enc_data,subno):
   maplist.append(spectra_diff_b)
   maplist.append(spectra_diff_g)
   
-  
   fig, axes = plt.subplots(1, 4, figsize=(20, 5))
   for ind in range(0,4):
       band_power=maplist[ind]
-      mne.viz.plot_topomap(band_power.mean(axis = 1),enc_data.info, axes=axes[ind],show=False);
+      mne.viz.plot_topomap(band_power.mean(axis = 1),enc_data.info,names=picks,axes=axes[ind],show=False);
       axes[ind].set_title(bands[ind] + ' power', {'fontsize' : 16}) 
   fig.savefig(f'topmapdiff/subject{subno}.png')
   
   fig, axes = plt.subplots(1, 4, figsize=(20, 5))
   for ind in range(0,4):
       band_power=mappsd1[ind]
-      mne.viz.plot_topomap(band_power.mean(axis = 1),enc_data.info, axes=axes[ind],show=False);
+      mne.viz.plot_topomap(band_power.mean(axis = 1),enc_data.info,names=picks, axes=axes[ind],show=False);
       axes[ind].set_title(bands[ind] + ' power enc', {'fontsize' : 16}) 
   fig.savefig(f'topmapdiff/subject{subno}_enc.png')
   
   fig, axes = plt.subplots(1, 4, figsize=(20, 5))
   for ind in range(0,4):
       band_power=mappsd2[ind]
-      mne.viz.plot_topomap(band_power.mean(axis = 1),enc_data.info, axes=axes[ind],show=False);
+      mne.viz.plot_topomap(band_power.mean(axis = 1),enc_data.info,names=picks, axes=axes[ind],show=False);
       axes[ind].set_title(bands[ind] + ' power non enc', {'fontsize' : 16}) 
   fig.savefig(f'topmapdiff/subject{subno}non_ENC.png')
   
