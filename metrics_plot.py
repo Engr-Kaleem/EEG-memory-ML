@@ -40,3 +40,21 @@ def conf_matrix(y_test, pred_test,sub,i,k):
     plt.savefig(f'confmatSVR/subj{sub}fold{i}nthtime{k}')
     plt.close()
     
+def  plot_metrics_FS(All_metrics,clf,selected):
+    
+    plt.figure()
+    plt.plot(All_metrics[0,:],All_metrics[1,:],marker='P' ,label = "train_acc")
+    plt.plot(All_metrics[0,:],All_metrics[2,:],marker='P' ,label = "test_acc")
+    plt.plot(All_metrics[0,:],All_metrics[3,:],marker='P' , label = "F1")
+    plt.plot(All_metrics[0,:],All_metrics[4,:],marker='P' , label = "Recall")
+    plt.plot(All_metrics[0,:],All_metrics[5,:],marker='P' , label = "Precision")
+    plt.grid() 
+    plt.xlabel('subjects')
+    plt.ylabel('Accuracy')
+    plt.title(f'Accuracey with clssifier:{clf}')
+      
+
+    # Put a legend below current axis
+    plt.legend(loc='upper right',fontsize = 'xx-small')
+    #plt.show()
+    plt.savefig(f'Accuracey/clssifier{clf}_{selected}_channel_selected_feature.png')
