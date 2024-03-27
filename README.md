@@ -1,2 +1,2 @@
 # EEG-memory-ML
- EEG recall  
+ EEG recall  ERD/ERS  binureal hearing
