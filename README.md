@@ -1,10 +1,45 @@
-# EEG-memory-ML
- EEG 
- Frequencey anylsis
- Common spatial pattern
- Machine laraning and  binary classification
- recall 
- ERD/ERS 
+# Filter Bank Common Spatial Patterns (FBCSP) for EEG Signal Processing
+
+Welcome to the repository for Filter Bank Common Spatial Patterns (FBCSP) implementation for EEG signal processing.
+
+## Overview
+
+Filter Bank Common Spatial Patterns (FBCSP) is an extension of the traditional Common Spatial Patterns (CSP) algorithm tailored for Electroencephalography (EEG) signal analysis. FBCSP incorporates a filter bank approach to capture frequency-specific information from EEG signals, enhancing its discriminative power.
+
+## Features
+
+- **Filter Bank Decomposition**: Decompose EEG signals into multiple frequency bands using a filter bank.
+- **Spatial Filter Extraction**: Apply CSP independently to each frequency band to extract spatial filters.
+- **Feature Concatenation**: Concatenate spatial filters across frequency bands to form feature vectors.
+- **Classification**: Train classifiers on the concatenated feature vectors for EEG signal classification.
+- **Performance Evaluation**: Evaluate classification performance using cross-validation or other evaluation methods.
+
+## Usage
+
+1. **Preprocessing**: Clean and preprocess EEG data (filtering, artifact removal, etc.).
+2. **Filter Bank Decomposition**: Decompose EEG signals into multiple frequency bands.
+3. **Spatial Filter Extraction**: Apply CSP independently to each frequency band.
+4. **Feature Concatenation**: Concatenate spatial filters to form feature vectors.
+5. **Classification**: Train classifiers on feature vectors for EEG signal classification.
+6. **Evaluation**: Evaluate classifier performance using appropriate metrics.
+
+## Implementation
+
+This implementation is available in Python and MATLAB, utilizing common signal processing libraries and tools. Refer to the provided scripts and documentation for detailed usage instructions.
+
+## References
+
+- [Original CSP Paper](link_to_original_paper)
+- [Related Publications](link_to_related_publications)
+- [EEG Signal Processing Resources](link_to_resources)
+
+## Contributing
+
+Contributions are welcome! If you have improvements or suggestions, feel free to open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
 
 
 # Data Analysis
