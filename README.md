@@ -52,12 +52,14 @@ We have used t  following visualization for data analysis
 2.	visualization PSDs of delta theta alpha beta for each subject(many graphs)
    Observation:  No fixed pattern found, activity in different bands for different subject
 3.	Top maps of delta theta alpha beta bands for each object to see activity   neural across 
- 
+
+ ![\topomap](images/topo.png)
 observation:  No fixed pattern was found; however, we can use these maps and PSD plots to reduce the number of channels for analysis.
 4.	 ERD/S MAP  analysis  ERD/S calculation for both Classes (ERD ENC vs ERD NO ENC)
  
   
-
+![\erds](images/ERDS.png)
+![\erdstime](images/ERDSTIme.png)
  
 Observation alpha band seems to have a pattern however EERD is affected by extreme values in epochs which can be seen in can be solved by reject epochs which can result in data loss.
  
@@ -67,7 +69,7 @@ Classification:  Based on database result 2,3,4 we have chosen FBCSP  because it
 Highly affected by class imbalance   extremely low F1 precision and Recall scores
  
  
-
+![\im](images/imresults.png)
 
 
 ## 2.	Results using balanced random forest tress n=15 tress 
@@ -75,7 +77,7 @@ Highly affected by class imbalance   extremely low F1 precision and Recall score
  
  
 
-
+![\bal](images/balanced.png)
 
 
 ## 3.	Results using Synthetic Minority Oversampling SMOTE+ standard random forest tress n=150 tress 
@@ -83,5 +85,5 @@ SMOTE (Synthetic Minority Oversampling Technique) is an oversampling technique t
  
  
 
-
+![\bestresult](images/bestresult.png)
 
