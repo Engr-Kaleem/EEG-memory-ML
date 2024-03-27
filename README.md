@@ -45,6 +45,8 @@ This project is licensed under the [MIT License](LICENSE).
 # Data Analysis
 We have used t  following visualization for data analysis
 ## 1.	PSD plots of each subject
+![\psd](images/PSD.png)
+
  
  Observation: prominent activity across all subjects for both classes (ENC, NO_ENC) in 5 -20 Hz   and 25- 35 Hz  
 2.	visualization PSDs of delta theta alpha beta for each subject(many graphs)
