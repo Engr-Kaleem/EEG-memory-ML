@@ -53,7 +53,7 @@ We have used t  following visualization for data analysis
    Observation:  No fixed pattern found, activity in different bands for different subject
 3.	Top maps of delta theta alpha beta bands for each object to see activity   neural across 
 
- ![\topomap](images/topo.png)
+ ![\topomap](images/topomap.png)
 observation:  No fixed pattern was found; however, we can use these maps and PSD plots to reduce the number of channels for analysis.
 4.	 ERD/S MAP  analysis  ERD/S calculation for both Classes (ERD ENC vs ERD NO ENC)
  
