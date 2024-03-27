@@ -1,2 +1,7 @@
 # EEG-memory-ML
- EEG recall  ERD/ERS  binureal hearing
+ EEG 
+ Frequencey anylsis
+ Common spatial pattern
+ Machine laraning and  binary classification
+ recall 
+ ERD/ERS 
